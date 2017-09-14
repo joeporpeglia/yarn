@@ -408,13 +408,27 @@ export function main({
     // add manifests
     for (const registryName of registryNames) {
       const possibleLoc = path.join(config.cwd, registries[registryName].filename);
-      const manifest = fs.existsSync(possibleLoc) ? fs.readFileSync(possibleLoc, 'utf8') : 'No manifest';
+
+      let manifest;
+      try {
+        manifest = fs.existsSync(possibleLoc) ? fs.readFileSync(possibleLoc, 'utf8') : 'No manifest';
+      } catch (error) {
+        manifest = 'Failed to open manifest';
+      }
+
       log.push(`${registryName} manifest: ${indent(manifest)}`);
     }
 
     // lockfile
     const lockLoc = path.join(config.cwd, constants.LOCKFILE_FILENAME);
-    const lockfile = fs.existsSync(lockLoc) ? fs.readFileSync(lockLoc, 'utf8') : 'No lockfile';
+
+    let lockfile;
+    try {
+      lockfile = fs.existsSync(lockLoc) ? fs.readFileSync(lockLoc, 'utf8') : 'No lockfile';
+    } catch (error) {
+      lockfile = 'Failed to open lockfile';
+    }
+
     log.push(`Lockfile: ${indent(lockfile)}`);
 
     log.push(`Trace: ${indent(err.stack)}`);
